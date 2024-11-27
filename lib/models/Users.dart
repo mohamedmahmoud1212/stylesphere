@@ -1,7 +1,7 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+// import 'dart:convert';
+// import 'package:http/http.dart' as http;
 
-class Item {
+class Users {
   final String myCart;
   final String address;
   final double email;
@@ -10,7 +10,7 @@ class Item {
 
   final String accountType; //BACKENDLESS = Admin
 
-  Item({
+  Users({
     required this.name,
     required this.myCart,
     required this.address,
@@ -19,8 +19,8 @@ class Item {
     required this.accountType,
   });
 
-  factory Item.fromJson(Map<String, dynamic> json) {
-    return Item(
+  factory Users.fromJson(Map<String, dynamic> json) {
+    return Users(
       name: json['Name'] ?? 'User',
       myCart: json['myCart'] ?? 'No items yet', // use json or any logic
       address: json['Address'] ?? '',
@@ -31,15 +31,15 @@ class Item {
   }
 }
 
-Future<List<Item>> fetchUsers() async {
-  final response = await http.get(
-    Uri.parse('https://cleardress-us.backendless.app/api/data/Users'),
-  );
+// Future<List<Users>> fetchUsers() async {
+//   final response = await http.get(
+//     Uri.parse('https://cleardress-us.backendless.app/api/data/Users'),
+//   );
 
-  if (response.statusCode == 200) {
-    final List jsonResponse = json.decode(response.body);
-    return jsonResponse.map((data) => Item.fromJson(data)).toList();
-  } else {
-    throw Exception('Failed to load items');
-  }
-}
+//   if (response.statusCode == 200) {
+//     final List jsonResponse = json.decode(response.body);
+//     return jsonResponse.map((data) => Users.fromJson(data)).toList();
+//   } else {
+//     throw Exception('Failed to load items');
+//   }
+// }
