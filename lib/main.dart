@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:stylesphere/screen/HomeScreen.dart';
+import 'package:stylesphere/controllers/sharedpre.dart';
+import 'package:stylesphere/screen/home_screen.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await CacheHelper.cacheintialization();
   runApp(const MyApp());
 }
 
