@@ -28,13 +28,6 @@ dependencies:
   hexcolor: ^3.0.1
   shared_preferences: ^2.3.3
   flutter_screenutil: ^5.9.3
-  google_sign_in: ^6.2.2
-  oauth2: ^2.0.3
-  url_launcher: ^6.0.10
-  firebase_auth: ^5.3.3
-  firebase_core: ^3.8.0
-  cloud_firestore: 5.5.0
-  
 
 dev_dependencies:
   flutter_test:

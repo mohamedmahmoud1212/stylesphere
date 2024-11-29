@@ -10,17 +10,11 @@
 
 analyzer:
   errors:
-    avoid_print: ignore
-    curly_braces_in_flow_control_structures: ignore
-    deprecated_member_use: ignore
     file_names: ignore
     library_private_types_in_public_api: ignore
     non_constant_identifier_names: ignore
     prefer_const_constructors: ignore
-    prefer_const_declarations: ignore
     prefer_const_literals_to_create_immutables: ignore
-    unnecessary_new: ignore
-    unrelated_type_equality_checks: ignore
     use_key_in_widget_constructors: ignore
 include: package:flutter_lints/flutter.yaml
 
