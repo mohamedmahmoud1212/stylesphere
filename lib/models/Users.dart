@@ -8,7 +8,7 @@ class Users {
   final String name;
   final String phoneNumber;
 
-  final String accountType; // BACKENDLESS = Admin
+  final String accountType;
 
   Users({
     required this.name,
@@ -25,7 +25,7 @@ class Users {
       myCart: json['myCart'] ?? 'No items yet', // use json or any logic
       address: json['Address'] ?? '',
       email: json['email'] ?? '',
-      phoneNumber: json['PhoneNumber'] ?? 'Everyone',
+      phoneNumber: json['PhoneNumber'] ?? '',
       accountType: json['accountType'] ?? '',
     );
   }

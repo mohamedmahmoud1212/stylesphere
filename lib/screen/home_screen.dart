@@ -93,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   return ListTile(
                     title: Text(
-                      item.name!,
+                      item.name,
                       style: TextStyle(fontSize: 20),
                     ),
                     subtitle: Text(
