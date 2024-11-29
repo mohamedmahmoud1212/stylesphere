@@ -34,5 +34,24 @@
 </head>
 <body>
   <script src="flutter_bootstrap.js" async></script>
+  <script src="https://apis.google.com/js/api.js" async defer></script>
+  <script>
+    function initializeGapi() {
+      gapi.load('client:auth2', function () {
+        gapi.client
+          .init({
+            clientId: '530949211062-mpb77hsuj2jjjrlsaocpnib2hcsce2kf.apps.googleusercontent.com',
+            scope: 'profile email openid',
+          })
+          .then(function () {
+            console.log('gapi.client initialized');
+          })
+          .catch(function (error) {
+            console.error('Error initializing gapi.client:', error);
+          });
+      });
+    }
+  </script>
+  
 </body>
 </html>

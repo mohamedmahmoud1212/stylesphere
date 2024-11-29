@@ -1,6 +1,5 @@
-import 'package:backendless_sdk/backendless_sdk.dart';
 import 'package:flutter/material.dart';
-import 'package:stylesphere/controllers/functions.dart';
+import 'package:stylesphere/controllers/firebase_func.dart';
 import 'package:stylesphere/models/Item.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -10,13 +9,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   //late Future<List<Item>> _futureItems;
-
-  @override
-  void initState() {
-    super.initState();
-    Backendless.initApp(customDomain: "cleardress-us.backendless.app");
-    //_futureItems = fetchItems();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +76,7 @@ class _HomeScreenState extends State<HomeScreen> {
           // if you want to find smth eg. ['Products', byCategory: "Top", byGender: "Female"]
           // or ['Users', byPhone: "01553961060"]
           // LOOK DEBUG CONSOLE FOR OUTPUT
-          future: fetchData('Products', byPrice: 99.9),
+          future: fetchData("Products", byPrice: 200),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
@@ -101,19 +93,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   return ListTile(
                     title: Text(
-                      item.name,
+                      item.name!,
                       style: TextStyle(fontSize: 20),
                     ),
                     subtitle: Text(
-                      '\$${item.price.toStringAsFixed(2)} | '
+                      '\$${item.price!.toStringAsFixed(2)} | '
                       'Category: ${item.category} | '
                       'Description: ${item.description}',
                     ),
-                    leading: item.imageUrl.isNotEmpty
+                    leading: item.image != null
                         ? ClipRRect(
                             borderRadius: BorderRadius.circular(15),
                             child: Image.network(
-                              item.imageUrl,
+                              item.image.toString(),
                               width: 50,
                               height: 50,
                               fit: BoxFit.cover,

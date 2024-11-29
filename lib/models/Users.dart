@@ -8,7 +8,7 @@ class Users {
   final String name;
   final String phoneNumber;
 
-  final String accountType; //BACKENDLESS = Admin
+  final String accountType; // BACKENDLESS = Admin
 
   Users({
     required this.name,
@@ -21,10 +21,10 @@ class Users {
 
   factory Users.fromJson(Map<String, dynamic> json) {
     return Users(
-      name: json['Name'] ?? 'User',
+      name: json['name'] ?? 'User',
       myCart: json['myCart'] ?? 'No items yet', // use json or any logic
       address: json['Address'] ?? '',
-      email: json['Email'] ?? '',
+      email: json['email'] ?? '',
       phoneNumber: json['PhoneNumber'] ?? 'Everyone',
       accountType: json['accountType'] ?? '',
     );
