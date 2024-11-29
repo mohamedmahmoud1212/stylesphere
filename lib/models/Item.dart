@@ -1,28 +1,38 @@
 class Item {
+  final String documentID;
   final String name;
-  final String description;
-  final double price;
-  final String imageUrl;
-  final String category;
-  final String interest;
+
+  final String? image;
+  final String? email;
+  final String? phone;
+  final String? description;
+  final double? price;
+  final String? category;
+  final String? interest;
 
   Item({
+    required this.documentID,
     required this.name,
-    required this.description,
-    required this.price,
-    required this.imageUrl,
-    required this.category,
-    required this.interest,
+    this.description,
+    this.price,
+    this.image,
+    this.category,
+    this.interest,
+    this.email,
+    this.phone,
   });
 
-  factory Item.fromJson(Map<String, dynamic> json) {
+  factory Item.fromJson(Map<String, dynamic> json, String documentID) {
     return Item(
-      name: json['Name'] ?? 'No name',
-      description: json['Description'] ?? 'No description.',
-      imageUrl: json['Image'] ?? '',
-      category: json['Category'] ?? 'Null',
-      interest: json['Interest'] ?? 'Everyone',
-      price: (json['Price'] as num?)?.toDouble() ?? 1.99,
+      documentID: documentID,
+      name: json['Name'] ?? "No Name",
+      category: json['Category'] ?? "No Category",
+      price: (json['Price'] ?? 0.0) as double,
+      description: json['Description'] ?? "No description",
+      interest: json['Interest'] ?? "All",
+      image: json['Image'] ?? "No Image" as String?,
+      email: json['email'] ?? "No Email" as String?,
+      phone: json['PhoneNumber'] ?? "No Phone" as String?,
     );
   }
 }
