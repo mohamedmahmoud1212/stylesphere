@@ -63,19 +63,8 @@ Future<void> debugFetchin() async {
   }
 }
 
-Future<void> updateData(
-    String from, String GUID, String fieldName, dynamic newValue) async {
-  try {
-    final docRef = FirebaseFirestore.instance.collection(from).doc(GUID);
-    await docRef.update({fieldName: newValue});
-    print('Data updated successfully!');
-  } catch (e) {
-    throw Exception('Failed to update field data: $e');
-  }
-}
 
-Future<void> registerUser(String email, String password, String name,
-    String addr, String phone) async {
+Future<void> registerUser({required String email, required String password, required String name,required String phone}) async {
   try {
     final userCredential = await FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: email, password: password);
@@ -84,7 +73,7 @@ Future<void> registerUser(String email, String password, String name,
     if (uid != null) {
       await FirebaseFirestore.instance.collection('Users').doc(uid).set({
         'Name': name,
-        'Address': addr,
+        // 'Address': addr,
         'PhoneNumber': phone,
         'Email': email,
       });
@@ -135,6 +124,18 @@ Future<void> deleteProduct(String GUID) async {
     print('Product deleted successfully.');
   } catch (e) {
     throw Exception('Failed to delete product: $e');
+  }
+}
+
+
+Future<void> updateData(
+    String from, String GUID, String fieldName, dynamic newValue) async {
+  try {
+    final docRef = FirebaseFirestore.instance.collection(from).doc(GUID);
+    await docRef.update({fieldName: newValue});
+    print('Data updated successfully!');
+  } catch (e) {
+    throw Exception('Failed to update field data: $e');
   }
 }
 

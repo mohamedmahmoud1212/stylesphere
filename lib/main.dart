@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:stylesphere/controllers/sharedpre.dart';
 import 'package:stylesphere/screen/LoginScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:stylesphere/screen/profile/profile_screen.dart';
+import 'package:stylesphere/screen/sign_proccess/createAccount_screen.dart';
+import 'package:stylesphere/screen/sign_proccess/signin_screen.dart';
+import 'package:stylesphere/screen/splash/splash_screen.dart';
 import '../firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await CacheHelper.cacheintialization();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -30,7 +36,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: AuthPage(),
+      home: ProfileScreen(),
     );
   }
 }
