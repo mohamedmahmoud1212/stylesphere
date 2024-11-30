@@ -39,9 +39,10 @@ class _AuthPageState extends State<AuthPage> {
             ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () =>
-                  addProduct("test", "test", "test", 4.4, "test"), // working
-              child: Text("Register"),
+              onPressed: () => addProduct(
+                  "Rolex", "Accessory", "Gold Rolex watch", 299.99, "Men",
+                  image: "https://i.ibb.co/z5KW0dx/a6.jpg"), // working
+              child: Text("Add product"),
             ),
             ElevatedButton(
               onPressed: () => debugFetchin(),

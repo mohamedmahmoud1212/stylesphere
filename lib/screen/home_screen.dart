@@ -1,4 +1,3 @@
-import 'package:backendless_sdk/backendless_sdk.dart';
 import 'package:flutter/material.dart';
 import 'package:stylesphere/controllers/firebase_func.dart';
 import 'package:stylesphere/models/Item.dart';
@@ -14,7 +13,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    Backendless.initApp(customDomain: "cleardress-us.backendless.app");
+    //Backendless.initApp(customDomain: "cleardress-us.backendless.app");
     //_futureItems = fetchItems();
   }
 
@@ -84,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
           // if you want to find smth eg. ['Products', byCategory: "Top", byGender: "Female"]
           // or ['Users', byPhone: "01553961060"]
           // LOOK DEBUG CONSOLE FOR OUTPUT
-          future: fetchData('Products', byPrice: 99.9),
+          future: fetchData('Products'),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
