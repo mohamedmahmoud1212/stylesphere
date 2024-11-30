@@ -1,3 +1,93 @@
+// actions: [
+// PopupMenuButton<String>(
+// onSelected: (value) async {
+// if (value == '1') {
+// // Handle "Home" action
+// } else if (value == '2') {
+// // Handle "Settings" action
+// } else if (value == '3') {
+// // Log out the user
+// try {
+// await logoutUser(); // Call your logout function
+// Navigator.pushReplacement(
+// context,
+// MaterialPageRoute(builder: (context) => SignIn()),
+// );
+// } catch (e) {
+// // Handle logout errors
+// ScaffoldMessenger.of(context).showSnackBar(
+// SnackBar(content: Text('Logout failed: ${e.toString()}')),
+// );
+// }
+// }
+// },
+// itemBuilder: (BuildContext context) {
+// return [
+// PopupMenuItem<String>(
+// value: '1',
+// child: Row(
+// children: [
+// Icon(Icons.home),
+// SizedBox(width: 10),
+// Text('Home', style: TextStyle(fontFamily: 'cairo', fontSize: 16)),
+// ],
+// ),
+// ),
+// PopupMenuItem<String>(
+// value: '2',
+// child: Row(
+// children: [
+// Icon(Icons.settings),
+// SizedBox(width: 10),
+// Text('Settings', style: TextStyle(fontFamily: 'cairo', fontSize: 16)),
+// ],
+// ),
+// ),
+// PopupMenuItem<String>(
+// value: '3',
+// child: Row(
+// children: [
+// Icon(Icons.exit_to_app),
+// SizedBox(width: 10),
+// Text('Log Out', style: TextStyle(fontFamily: 'cairo', fontSize: 16)),
+// ],
+// ),
+// ),
+// ];
+// },
+// ),
+// ],
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import 'package:backendless_sdk/backendless_sdk.dart';
 import 'package:flutter/material.dart';
 import 'package:stylesphere/controllers/firebase_func.dart';
 import 'package:stylesphere/models/Item.dart';
@@ -9,6 +99,10 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  //late Future<List<Item>> _futureItems;
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,25 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           actions: [
             PopupMenuButton<String>(
-              onSelected: (value) async {
-                if (value == '1') {
-                  // Handle "Home" action
-                } else if (value == '2') {
-                  // Handle "Settings" action
-                } else if (value == '3') {
-                  try {
-                    await logoutUser();
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => SignIn()),
-                    );
-                  } catch (e) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Logout failed: ${e.toString()}')),
-                    );
-                  }
-                }
-              },
+              onSelected: (value) {},
               itemBuilder: (BuildContext context) {
                 return [
                   PopupMenuItem<String>(
@@ -50,9 +126,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Icon(Icons.home),
                         SizedBox(width: 10),
-                        Text('Home',
-                            style:
-                                TextStyle(fontFamily: 'cairo', fontSize: 16)),
+                        Text(
+                          'Home',
+                          style: TextStyle(fontFamily: 'cairo', fontSize: 16),
+                        ),
                       ],
                     ),
                   ),
@@ -62,21 +139,27 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Icon(Icons.settings),
                         SizedBox(width: 10),
-                        Text('Settings',
-                            style:
-                                TextStyle(fontFamily: 'cairo', fontSize: 16)),
+                        Text(
+                          'Settings',
+                          style: TextStyle(fontFamily: 'cairo', fontSize: 16),
+                        ),
                       ],
                     ),
                   ),
                   PopupMenuItem<String>(
+                    onTap: (){
+                      logoutUser();
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>SignIn()));
+                    },
                     value: '3',
                     child: Row(
                       children: [
                         Icon(Icons.exit_to_app),
                         SizedBox(width: 10),
-                        Text('Log Out',
-                            style:
-                                TextStyle(fontFamily: 'cairo', fontSize: 16)),
+                        Text(
+                          'Log Out',
+                          style: TextStyle(fontFamily: 'cairo', fontSize: 16),
+                        ),
                       ],
                     ),
                   ),
@@ -112,19 +195,19 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     subtitle: Text(
                       '\$${item.price?.toStringAsFixed(2).toString()} | '
-                      'Category: ${item.category} | '
-                      'Description: ${item.description}',
+                          'Category: ${item.category} | '
+                          'Description: ${item.description}',
                     ),
                     leading: item.image != null
                         ? ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
-                            child: Image.network(
-                              item.image.toString(),
-                              width: 50,
-                              height: 50,
-                              fit: BoxFit.cover,
-                            ),
-                          )
+                      borderRadius: BorderRadius.circular(15),
+                      child: Image.network(
+                        item.image.toString(),
+                        width: 50,
+                        height: 50,
+                        fit: BoxFit.cover,
+                      ),
+                    )
                         : Icon(Icons.image_not_supported),
                   );
                 },
