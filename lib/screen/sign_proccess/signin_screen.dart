@@ -4,7 +4,6 @@ import 'package:stylesphere/controllers/firebase_func.dart';
 import 'package:stylesphere/screen/home_screen.dart';
 import 'package:stylesphere/screen/sign_proccess/createAccount_screen.dart';
 
-// import 'package:flutter_screenutil/flutter_screenutil.dart';
 class SignIn extends StatefulWidget {
   const SignIn({super.key});
 
@@ -19,11 +18,10 @@ class _SignInState extends State<SignIn> {
   @override
   void initState() {
     super.initState();
-    _checkLoginStatus(); // Call the async method
+    _checkLoginStatus();
   }
 
   Future<void> _checkLoginStatus() async {
-    // Check if the user is logged in
     if (await isUserLoggedIn()) {
       Navigator.pushReplacement(
         context,
@@ -83,10 +81,10 @@ class _SignInState extends State<SignIn> {
                       "Continue",
                       style: TextStyle(color: Colors.white),
                     ),
-                    onPressed: () async{
-                      loginUser(emailControl.text,passwordControl.text);
+                    onPressed: () async {
+                      loginUser(emailControl.text, passwordControl.text);
                       await _checkLoginStatus();
-                     },
+                    },
                   ),
                 ),
                 SizedBox(height: 5),
@@ -97,7 +95,10 @@ class _SignInState extends State<SignIn> {
                       Text("Don't have an Account? "),
                       TextButton(
                         onPressed: () {
-                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>CreateAccountScreen()));
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CreateAccountScreen()));
                         },
                         child: Text("Create One"),
                       )
@@ -107,11 +108,9 @@ class _SignInState extends State<SignIn> {
                 SizedBox(height: 70),
                 InkWell(
                   hoverColor: Colors.transparent,
-                  onTap: () {
-                    signInWithGoogle();
-                    Future.delayed(Duration(seconds: 8), () {
-                      _checkLoginStatus();
-                    });
+                  onTap: () async {
+                    await signInWithGoogle();
+                    _checkLoginStatus();
                   },
                   child: Container(
                     height: 50,

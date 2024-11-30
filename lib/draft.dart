@@ -58,36 +58,6 @@
 // ),
 // ],
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-import 'package:backendless_sdk/backendless_sdk.dart';
 import 'package:flutter/material.dart';
 import 'package:stylesphere/controllers/firebase_func.dart';
 import 'package:stylesphere/models/Item.dart';
@@ -99,10 +69,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  //late Future<List<Item>> _futureItems;
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -147,9 +113,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   PopupMenuItem<String>(
-                    onTap: (){
+                    onTap: () {
                       logoutUser();
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=>SignIn()));
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => SignIn()));
                     },
                     value: '3',
                     child: Row(
@@ -195,19 +162,19 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     subtitle: Text(
                       '\$${item.price?.toStringAsFixed(2).toString()} | '
-                          'Category: ${item.category} | '
-                          'Description: ${item.description}',
+                      'Category: ${item.category} | '
+                      'Description: ${item.description}',
                     ),
                     leading: item.image != null
                         ? ClipRRect(
-                      borderRadius: BorderRadius.circular(15),
-                      child: Image.network(
-                        item.image.toString(),
-                        width: 50,
-                        height: 50,
-                        fit: BoxFit.cover,
-                      ),
-                    )
+                            borderRadius: BorderRadius.circular(15),
+                            child: Image.network(
+                              item.image.toString(),
+                              width: 50,
+                              height: 50,
+                              fit: BoxFit.cover,
+                            ),
+                          )
                         : Icon(Icons.image_not_supported),
                   );
                 },
