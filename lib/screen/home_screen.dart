@@ -88,9 +88,9 @@ class _HomeScreenState extends State<HomeScreen> {
         body: FutureBuilder<List<Item>?>(
           // fetchData() Gets all data from the first parameter eg. 'Users' or 'Products',
           // if you want to find smth eg. ['Products', byCategory: "Top", byGender: "Female"]
-          // or ['Users', byPhone: "01553961060"]
+          // or ['Users', byEmail: "p4nd2x@gmail.com"]
           // LOOK DEBUG CONSOLE FOR OUTPUT
-          future: fetchData('Products', byPrice: 99.9),
+          future: fetchData('Products'),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
