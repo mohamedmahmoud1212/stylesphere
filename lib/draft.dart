@@ -140,7 +140,7 @@ class _HomeScreenState extends State<HomeScreen> {
           // if you want to find smth eg. ['Products', byCategory: "Top", byGender: "Female"]
           // or ['Users', byPhone: "01553961060"]
           // LOOK DEBUG CONSOLE FOR OUTPUT
-          future: fetchData('Products', byPrice: 99.9),
+          future: fetchData('Products', byGender: "Female"),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());

@@ -49,22 +49,26 @@ Future<List<Item>> fetchData(
 }
 
 Future<void> debugFetchin() async {
-  List<Item> items = await fetchData('Products');
+  List<Item> items = await fetchData('Products', byGender: "Female");
   for (var item in items) {
-    print('Document ID: ${item.documentID}');
+    print('GUID: ${item.documentID}');
     print('Name: ${item.name}');
     print('Category: ${item.category}');
     print('Price: ${item.price}');
     print('Description: ${item.description}');
     print('Interest: ${item.interest}');
     print('Image: ${item.image}');
-    print('Email: ${item.email}');
-    print('Phone: ${item.phone}');
+    print("====================================");
+    // print('Email: ${item.email}');
+    // print('Phone: ${item.phone}');
   }
 }
 
-
-Future<void> registerUser({required String email, required String password, required String name,required String phone}) async {
+Future<void> registerUser(
+    {required String email,
+    required String password,
+    required String name,
+    required String phone}) async {
   try {
     final userCredential = await FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: email, password: password);
@@ -126,7 +130,6 @@ Future<void> deleteProduct(String GUID) async {
     throw Exception('Failed to delete product: $e');
   }
 }
-
 
 Future<void> updateData(
     String from, String GUID, String fieldName, dynamic newValue) async {
