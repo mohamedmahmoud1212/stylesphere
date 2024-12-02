@@ -4,6 +4,7 @@ class Users {
   final String name;
   final String phoneNumber;
   final String accountType;
+  final String? AvatarURL;
 
   Users({
     required this.name,
@@ -11,6 +12,7 @@ class Users {
     required this.email,
     required this.phoneNumber,
     required this.accountType,
+    this.AvatarURL,
   });
 
   factory Users.fromJson(Map<String, dynamic> json) {
@@ -20,6 +22,7 @@ class Users {
       email: json['Email'] ?? '',
       phoneNumber: json['PhoneNumber'] ?? 'No phone number',
       accountType: json['accountType'] ?? '',
+      AvatarURL: json['AvatarURL'] ?? '',
     );
   }
 }

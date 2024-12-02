@@ -43,7 +43,6 @@ class _AuthPageState extends State<AuthPage> {
         padding: EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // Input fields for product details
             TextField(
               controller: _nameController,
               decoration: InputDecoration(labelText: "Name"),

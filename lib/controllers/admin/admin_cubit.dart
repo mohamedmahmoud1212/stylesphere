@@ -8,8 +8,8 @@ class AdminCubit extends Cubit<AdminState> {
   AdminCubit() : super(AdminInitial());
 
   ///Add product from admin panel to Ui
-  void addProduct(String Name, String Category, String Description, double Price,
-      String Interest,
+  void addProduct(String Name, String Category, String Description,
+      double Price, String Interest,
       {String Image = ""}) {
     Map newProduct = {
       "Name": Name,
@@ -33,7 +33,7 @@ class AdminCubit extends Cubit<AdminState> {
         ..whereClause = "objectId = '$GUID'";
 
       final response =
-      await Backendless.data.of(from).find(queryBuilder: queryBuilder);
+          await Backendless.data.of(from).find(queryBuilder: queryBuilder);
 
       if (response != null && response.isNotEmpty) {
         Name = response.first['Name'] ?? 'Null';
@@ -58,8 +58,9 @@ class AdminCubit extends Cubit<AdminState> {
       DataQueryBuilder queryBuilder = DataQueryBuilder()
         ..whereClause = "objectId = '$GUID'";
 
-      final response =
-      await Backendless.data.of('Products').find(queryBuilder: queryBuilder);
+      final response = await Backendless.data
+          .of('Products')
+          .find(queryBuilder: queryBuilder);
 
       if (response != null && response.isNotEmpty) {
         productName = response.first['Name'] ?? 'Unnamed Product';
@@ -82,7 +83,7 @@ class AdminCubit extends Cubit<AdminState> {
       DataQueryBuilder queryBuilder = DataQueryBuilder()
         ..whereClause = "Email = '$email'";
       final response =
-      await Backendless.data.of('Users').find(queryBuilder: queryBuilder);
+          await Backendless.data.of('Users').find(queryBuilder: queryBuilder);
 
       if (response != null && response.isNotEmpty) {
         for (var user in response) {
@@ -96,5 +97,4 @@ class AdminCubit extends Cubit<AdminState> {
       throw Exception('Failed to delete user: $e');
     }
   }
-
 }

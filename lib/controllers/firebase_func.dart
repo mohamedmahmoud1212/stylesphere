@@ -5,6 +5,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:stylesphere/models/Item.dart';
 import 'package:stylesphere/models/Users.dart';
 
+Users? myUser;
+
 String genTransactionId() {
   var random = Random();
   String randomDigits =
@@ -15,12 +17,11 @@ String genTransactionId() {
   return transactionId;
 }
 
-Future<List<Users>> fetchUsers({
+Future<Users?> fetchUserdata({
   String? byName,
   String? byEmail,
   String? byPhoneNumber,
   String? byAccountType,
-  String? byGUID,
 }) async {
   try {
     Query query = FirebaseFirestore.instance.collection('Users');
@@ -28,25 +29,76 @@ Future<List<Users>> fetchUsers({
     if (byName != null) {
       query = query.where('Name', isEqualTo: byName);
     }
+    if (byEmail != null) {
+      query = query.where('Email', isEqualTo: byEmail);
+    }
     if (byPhoneNumber != null) {
       query = query.where('PhoneNumber', isEqualTo: byPhoneNumber);
-    }
-    if (byEmail != null) {
-      query = query.where('Email', isLessThanOrEqualTo: byEmail);
     }
     if (byAccountType != null) {
       query = query.where('accountType', isEqualTo: byAccountType);
     }
-    if (byGUID != null) {
-      query = query.where(FieldPath.documentId, isEqualTo: byGUID);
-    }
 
     final querySnapshot = await query.get();
-    return querySnapshot.docs.map<Users>((doc) {
-      return Users.fromJson(doc.data() as Map<String, dynamic>);
-    }).toList();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      var userData = querySnapshot.docs.first.data() as Map<String, dynamic>;
+
+      myUser = Users.fromJson(userData);
+      return myUser;
+    } else {
+      return null;
+    }
   } catch (e) {
-    throw Exception('Failed to load users: $e');
+    throw Exception('Failed to load user data: $e');
+  }
+}
+
+Future<UserCredential?> signInWithGoogle() async {
+  try {
+    final GoogleSignInAccount? googleUser = await GoogleSignIn(
+        clientId:
+            "530949211062-mpb77hsuj2jjjrlsaocpnib2hcsce2kf.apps.googleusercontent.com",
+        scopes: ['email', 'profile', 'openid']).signIn();
+
+    if (googleUser == null) {
+      print('Google sign-in aborted by user.');
+      return null;
+    }
+
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
+    final OAuthCredential credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    final userCredential =
+        await FirebaseAuth.instance.signInWithCredential(credential);
+    final uid = userCredential.user?.uid;
+
+    if (uid != null) {
+      final user = userCredential.user;
+
+      final userDoc =
+          await FirebaseFirestore.instance.collection('Users').doc(uid).get();
+
+      if (!userDoc.exists) {
+        await FirebaseFirestore.instance.collection('Users').doc(uid).set({
+          'Name': user?.displayName ?? '',
+          'PhoneNumber': user?.phoneNumber ?? '',
+          'Email': user?.email ?? '',
+          'AvatarURL': user?.photoURL ?? '',
+          'accountType': 'User',
+        });
+      }
+      fetchUserdata(byEmail: user?.email);
+    }
+
+    return userCredential;
+  } catch (e) {
+    print('Error during Google sign-in: $e');
+    return null;
   }
 }
 
@@ -78,7 +130,7 @@ Future<List<Item>> fetchProducts({
 }
 
 Future<void> debugFetchin() async {
-  List<Item> items = await fetchProducts(byCategory: "Female");
+  List<Item> items = await fetchProducts(byGender: "Female");
   for (var item in items) {
     print('GUID: ${item.documentID}');
     print('Name: ${item.name}');
@@ -97,7 +149,8 @@ Future<void> registerUser(
     {required String email,
     required String password,
     required String name,
-    required String phone}) async {
+    required String phone,
+    String? AvatarURL}) async {
   try {
     final userCredential = await FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: email, password: password);
@@ -110,6 +163,7 @@ Future<void> registerUser(
         'PhoneNumber': phone,
         'Email': email,
         'accountType': 'User',
+        'AvatarURL': AvatarURL ?? '',
       });
       print("User has been registered: $uid");
     }
@@ -173,7 +227,12 @@ Future<void> updateData(
 }
 
 Future<bool> isUserLoggedIn() async {
-  return FirebaseAuth.instance.currentUser != null;
+  if (FirebaseAuth.instance.currentUser != null) {
+    fetchUserdata(byEmail: FirebaseAuth.instance.currentUser?.email);
+    return true;
+  } else {
+    return false;
+  }
 }
 
 Future<void> loginUser(String email, String password) async {
@@ -181,63 +240,9 @@ Future<void> loginUser(String email, String password) async {
     await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password);
     print("Login successful!");
+    fetchUserdata(byEmail: email);
   } catch (e) {
     throw Exception('Login failed: $e');
-  }
-}
-
-Future<UserCredential?> signInWithGoogle() async {
-  try {
-    // Trigger the Google Authentication flow
-    final GoogleSignInAccount? googleUser = await GoogleSignIn(
-        clientId:
-            "530949211062-mpb77hsuj2jjjrlsaocpnib2hcsce2kf.apps.googleusercontent.com",
-        scopes: ['email', 'profile', 'openid']).signIn();
-    if (googleUser == null) {
-      print('Google sign-in aborted by user.');
-      return null;
-    }
-    final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
-
-    final OAuthCredential credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
-
-    return await FirebaseAuth.instance.signInWithCredential(credential);
-  } catch (e) {
-    print('Error during Google sign-in: $e');
-    return null;
-  }
-}
-
-Future<void> registerUserWithGoogle() async {
-  try {
-    final UserCredential? userCredential = await signInWithGoogle();
-
-    if (userCredential != null) {
-      final User? user = userCredential.user;
-
-      if (user != null) {
-        final String name = user.displayName ?? 'No Name';
-        final String email = user.email ?? 'No Email';
-        final String? photoUrl = user.photoURL;
-
-        print('User registered successfully!');
-        print('Name: $name');
-        print('Email: $email');
-        if (photoUrl != null) {
-          print('Photo URL: $photoUrl');
-        }
-      } else {
-        print('Failed to retrieve user details.');
-      }
-    } else {
-      print('Google sign-in failed.');
-    }
-  } catch (e) {
-    print('Error during user registration with Google: $e');
   }
 }
 
