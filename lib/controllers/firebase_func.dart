@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:stylesphere/models/Item.dart';
+import 'package:stylesphere/models/Users.dart';
 
 String genTransactionId() {
   var random = Random();
@@ -14,25 +15,53 @@ String genTransactionId() {
   return transactionId;
 }
 
-Future<List<Item>> fetchData(
-  String from, {
+Future<List<Users>> fetchUsers({
   String? byName,
   String? byEmail,
-  String? byPhone,
+  String? byPhoneNumber,
+  String? byAccountType,
+  String? byGUID,
+}) async {
+  try {
+    Query query = FirebaseFirestore.instance.collection('Users');
+
+    if (byName != null) {
+      query = query.where('Name', isEqualTo: byName);
+    }
+    if (byPhoneNumber != null) {
+      query = query.where('PhoneNumber', isEqualTo: byPhoneNumber);
+    }
+    if (byEmail != null) {
+      query = query.where('Email', isLessThanOrEqualTo: byEmail);
+    }
+    if (byAccountType != null) {
+      query = query.where('accountType', isEqualTo: byAccountType);
+    }
+    if (byGUID != null) {
+      query = query.where(FieldPath.documentId, isEqualTo: byGUID);
+    }
+
+    final querySnapshot = await query.get();
+    return querySnapshot.docs.map<Users>((doc) {
+      return Users.fromJson(doc.data() as Map<String, dynamic>);
+    }).toList();
+  } catch (e) {
+    throw Exception('Failed to load users: $e');
+  }
+}
+
+Future<List<Item>> fetchProducts({
+  String? byName,
   double? byPrice,
   String? byCategory,
   String? byGender,
   String? byGUID,
 }) async {
   try {
-    Query query = FirebaseFirestore.instance.collection(from);
-
-    if (byName != null) query = query.where('Name', isEqualTo: byName);
+    Query query = FirebaseFirestore.instance.collection('Products');
     if (byCategory != null)
       query = query.where('Category', isEqualTo: byCategory);
     if (byGender != null) query = query.where('Interest', isEqualTo: byGender);
-    if (byEmail != null) query = query.where('email', isEqualTo: byEmail);
-    if (byPhone != null) query = query.where('PhoneNumber', isEqualTo: byPhone);
     if (byPrice != null)
       query = query.where('Price', isLessThanOrEqualTo: byPrice);
     if (byGUID != null)
@@ -49,7 +78,7 @@ Future<List<Item>> fetchData(
 }
 
 Future<void> debugFetchin() async {
-  List<Item> items = await fetchData('Products', byGender: "Female");
+  List<Item> items = await fetchProducts(byCategory: "Female");
   for (var item in items) {
     print('GUID: ${item.documentID}');
     print('Name: ${item.name}');
@@ -80,6 +109,7 @@ Future<void> registerUser(
         // 'Address': addr,
         'PhoneNumber': phone,
         'Email': email,
+        'accountType': 'User',
       });
       print("User has been registered: $uid");
     }

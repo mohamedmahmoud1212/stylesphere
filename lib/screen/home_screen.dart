@@ -90,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
           // if you want to find smth eg. ['Products', byCategory: "Top", byGender: "Female"]
           // or ['Users', byEmail: "p4nd2x@gmail.com"]
           // LOOK DEBUG CONSOLE FOR OUTPUT
-          future: fetchData('Products'),
+          future: fetchProducts(byGender: "Female"),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());

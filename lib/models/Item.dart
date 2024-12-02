@@ -3,8 +3,6 @@ class Item {
   final String name;
 
   final String? image;
-  final String? email;
-  final String? phone;
   final String? description;
   final double? price;
   final String? category;
@@ -18,8 +16,6 @@ class Item {
     this.image,
     this.category,
     this.interest,
-    this.email,
-    this.phone,
   });
 
   factory Item.fromJson(Map<String, dynamic> json, String documentID) {
@@ -31,8 +27,6 @@ class Item {
       description: json['Description'] ?? "No description",
       interest: json['Interest'] ?? "All",
       image: json['Image'] ?? "No Image" as String?,
-      email: json['email'] ?? "No Email" as String?,
-      phone: json['PhoneNumber'] ?? "No Phone" as String?,
     );
   }
 }
