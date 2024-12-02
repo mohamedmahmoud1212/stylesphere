@@ -145,5 +145,5 @@ class _SignInState extends State<SignIn> {
   }
 }
 
-//8678B2,,,9A7FF1  9A7FF1
+//8678B2,,,9A7FF1
 //635EA4,,,746EB7
