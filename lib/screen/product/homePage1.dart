@@ -44,13 +44,13 @@ class _Homepage1State extends State<Homepage1> {
       body: SafeArea(
         child: _selectedIndex == 0
             ? HomepageContent(
-                searchQuery: searchQuery,
-                onSearchChanged: (query) {
-                  setState(() {
-                    searchQuery = query.toLowerCase();
-                  });
-                },
-              )
+          searchQuery: searchQuery,
+          onSearchChanged: (query) {
+            setState(() {
+              searchQuery = query.toLowerCase();
+            });
+          },
+        )
             : _pages[_selectedIndex],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -206,33 +206,34 @@ class CategoriesRow extends StatefulWidget {
 
 class _CategoriesRowState extends State<CategoriesRow> {
   late Future<List<Item>> itemsMaleFuture;
+  List<Item> itemsM = []; // Cached list of all items
+  List<Item> filteredProducts = []; // Dynamically filtered list
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    itemsMaleFuture = getProductsCat("Male") as Future<List<Item>>;
+    fetchAndSetItems();
+  }
+
+  Future<void> fetchAndSetItems() async {
+    try {
+      // Fetch items from Firestore
+      final fetchedProducts = await fetchProducts(byGender: "Male");
+
+      setState(() {
+        itemsM = fetchedProducts; // Store fetched items locally
+        filteredProducts = itemsMale; // Initially, show all items
+      });
+    } catch (e) {
+      // Handle any errors
+      print("Error fetching items: $e");
+    }
   }
   @override
   Widget build(BuildContext context) {
     // MediaQuery to scale layout for screen size
     double screenWidth = MediaQuery.of(context).size.width;
 
-    final List<Map<String, String>> categories = [
-      {"image": "assets/hoodies/hoodie_brown.webp", "label": "Hoodies"},
-      {
-        "image":
-            "assets/Shorts/ai-generated-3d-rendering-of-a-man-shorts-on-transparent-background-ai-generated-free-png.webp",
-        "label": "Shorts"
-      },
-      {
-        "image":
-            "assets/Shoes/a4xO3G-adidas-shoes-adidas-shoe-kids-superstar-daddy-grade.png",
-        "label": "Shoes"
-      },
-      {"image": "assets/Bags/Bag-PNG-Image.png", "label": "Bag"},
-      {"image": "assets/accessories/sunglasses.png", "label": "Accessories"},
-    ];
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -304,161 +305,172 @@ class _CategoriesRowState extends State<CategoriesRow> {
 
 // The TopSellingRow and NewInRow widgets remain unchanged
 
-class TopSellingRow extends StatelessWidget {
+class TopSellingRow extends StatefulWidget {
   final String searchQuery;
 
   const TopSellingRow({super.key, required this.searchQuery});
 
   @override
-  Widget build(BuildContext context) {
-    final List<Map<String, dynamic>> products = [
-      {
-        "image": "assets/hoodies/hoodie_brown.webp",
-        "name": "Men's Hoodiee NS",
-        "price": "\$150"
-      },
-      {
-        "image": "assets/men-s-slippers-slipper-o0LKMQ1-600.jpg",
-        "name": "Max Ciro men's slippers",
-        "price": "\$75"
-      },
-      {
-        "image":
-            "assets/accessories/png-clipart-apple-watch-apple-watch-white.png",
-        "name": "Smart Watch",
-        "price": "\$120"
-      },
-      {
-        "image":
-            "assets/accessories/png-clipart-hat-straw-hat-hat-photography.png",
-        "name": "Straw Hat",
-        "price": "\$40"
-      },
-    ];
+  State<TopSellingRow> createState() => _TopSellingRowState();
+}
 
-    final filteredProducts = products
-        .where((product) => product["name"].toLowerCase().contains(searchQuery))
-        .toList();
+class _TopSellingRowState extends State<TopSellingRow> {
+
+  late Future<List<Item>> itemsMaleFuture; // Original future for all items
+  List<Item> itemsM = []; // Cached list of all items
+  List<Item> filteredProducts = []; // Dynamically filtered list
+
+  @override
+  void initState() {
+    super.initState();
+    fetchAndSetItems();
+  }
+
+  Future<void> fetchAndSetItems() async {
+    try {
+      // Fetch items from Firestore
+      final fetchedProducts = await fetchProducts(byGender: "Male");
+
+      setState(() {
+        itemsM = fetchedProducts; // Store fetched items locally
+        filteredProducts = itemsMale; // Initially, show all items
+      });
+    } catch (e) {
+      // Handle any errors
+      print("Error fetching items: $e");
+    }
+  }
+
+  void filterItems(String query) {
+    setState(() {
+      filteredProducts = itemsMale
+          .where((item) => item.name.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    });
+  }
+  @override
+  Widget build(BuildContext context) {
+
+
+
 
     return filteredProducts.isEmpty
         ? const Center(
-            child: Text(
-              "No results found.",
-              style: TextStyle(color: Colors.grey, fontSize: 14),
-            ),
-          )
+      child: Text(
+        "No results found.",
+        style: TextStyle(color: Colors.grey, fontSize: 14),
+      ),
+    )
         : SizedBox(
-            height: 230,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              itemCount: filteredProducts.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 10),
-              itemBuilder: (context, index) {
-                final product = filteredProducts[index];
-                return InkWell(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ProductOptionsScreen(
-                                    productImage: products[index]["image"],
-                                    productTitle: products[index]["name"],
-                                    productPrice: products[index]["price"],
-                                  )));
-                    },
-                    child: ProductCard(product: product));
+      height: 230,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        itemCount: filteredProducts.length,
+        separatorBuilder: (_, __) => const SizedBox(width: 10),
+        itemBuilder: (context, index) {
+          final product = filteredProducts[index];
+          return InkWell(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ProductOptionsScreen(
+                          productImage: itemsM[index].image,
+                          productTitle: itemsM[index].name,
+                          productPrice: itemsM[index].price,
+                        )));
               },
-            ),
-          );
+              child: ProductCard(product: product));
+        },
+      ),
+    );
   }
 }
 
 class NewInRow extends StatefulWidget {
   final String searchQuery;
 
-    NewInRow({super.key, required this.searchQuery});
+  NewInRow({super.key, required this.searchQuery});
 
   @override
   State<NewInRow> createState() => _NewInRowState();
 }
 
 class _NewInRowState extends State<NewInRow> {
-  late Future<List<Item>> itemsMaleFuture;
+
+
+  late Future<List<Item>> itemsMaleFuture; // Original future for all items
+  List<Item> itemsMale = []; // Cached list of all items
+  List<Item> filteredItems = []; // Dynamically filtered list
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    itemsMaleFuture = fetchProducts(byGender: "Male");
+    fetchAndSetItems();
   }
 
+  Future<void> fetchAndSetItems() async {
+    try {
+      // Fetch items from Firestore
+      final fetchedItems = await fetchProducts(byGender: "Male");
+
+      setState(() {
+        itemsMale = fetchedItems; // Store fetched items locally
+        filteredItems = itemsMale; // Initially, show all items
+      });
+    } catch (e) {
+      // Handle any errors
+      print("Error fetching items: $e");
+    }
+  }
+
+  void filterItems(String query) {
+    setState(() {
+      filteredItems = itemsMale
+          .where((item) => item.name.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    });
+  }
   @override
   Widget build(BuildContext context) {
-    // final List<Map<String, dynamic>> newInItems = [
-    //   {
-    //     "image":
-    //         "assets/accessories/yellow-baseball-cap-isolated-on-transparent-background-cap-cut-out-mock-up-generative-ai-png.webp",
-    //     "name": "Baseball Cap",
-    //     "price": "\$60"
-    //   },
-    //   // {
-    //   //   "image": "assets/hoodies/hoodiee_black.webp",
-    //   //   "name": "Hoodie NS",
-    //   //   "price": "\$130"
-    //   // },
-    //   {
-    //     "image": "assets/hoodies/HoodieTNHeatherGrey.webp",
-    //     "name": "Hoodiee Winter",
-    //     "price": "\$140"
-    //   },
-    //   {
-    //     "image": "assets/Shorts/shorts.webp",
-    //     "name": "Short NS",
-    //     "price": "\$60"
-    //   },
-    // ];
 
-    final filteredNewInItems = itemsMaleFuture
-        .where((item) => item["name"].toLowerCase().contains(widget.searchQuery))
-        .toList();
-
-    return filteredNewInItems.isEmpty
+    return filteredItems.isEmpty
         ? const Center(
-            child: Text(
-              "No results found.",
-              style: TextStyle(color: Colors.grey, fontSize: 14),
-            ),
-          )
+      child: Text(
+        "No results found.",
+        style: TextStyle(color: Colors.grey, fontSize: 14),
+      ),
+    )
         : SizedBox(
-            height: 230,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              itemCount: filteredNewInItems.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 10),
-              itemBuilder: (context, index) {
-                final item = filteredNewInItems[index];
-                return InkWell(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ProductOptionsScreen(
-                                    productImage: newInItems[index]["image"],
-                                    productTitle: newInItems[index]["name"],
-                                    productPrice: newInItems[index]["price"],
-                                  )));
-                    },
-                    child: ProductCard(product: item));
+      height: 230,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        itemCount: filteredItems.length,
+        separatorBuilder: (_, __) => const SizedBox(width: 10),
+        itemBuilder: (context, index) {
+          final item = filteredItems[index];
+          return InkWell(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ProductOptionsScreen(
+                          productImage: itemsMale[index].image,
+                          productTitle: itemsMale[index].name,
+                          productPrice: itemsMale[index].price,
+                        )));
               },
-            ),
-          );
+              child: ProductCard(product: item));
+        },
+      ),
+    );
   }
 }
 
 class ProductCard extends StatefulWidget {
-  final Map<String, dynamic> product;
+  final Item product;
 
   const ProductCard({super.key, required this.product});
 
@@ -487,7 +499,7 @@ class _ProductCardState extends State<ProductCard> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),
                   image: DecorationImage(
-                    image: AssetImage(widget.product["image"]),
+                    image: AssetImage(widget.product.image.toString()),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -496,7 +508,7 @@ class _ProductCardState extends State<ProductCard> {
               Padding(
                 padding: const EdgeInsets.only(left: 5),
                 child: Text(
-                  widget.product["name"],
+                  widget.product.name,
                   style: const TextStyle(
                       fontSize: 12, fontWeight: FontWeight.bold),
                 ),
@@ -505,7 +517,7 @@ class _ProductCardState extends State<ProductCard> {
               Padding(
                 padding: const EdgeInsets.only(left: 5),
                 child: Text(
-                  widget.product["price"],
+                  widget.product.price.toString(),
                   style: const TextStyle(fontSize: 12, color: Colors.grey),
                 ),
               ),
