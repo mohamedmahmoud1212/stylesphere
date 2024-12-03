@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:stylesphere/controllers/firebase_func.dart';
+import 'package:stylesphere/controllers/sharedpre.dart';
 import 'package:stylesphere/screen/home_screen.dart';
+import 'package:stylesphere/screen/profile/Address.dart';
+import 'package:stylesphere/screen/profile/profile_screen.dart';
 import 'package:stylesphere/screen/sign_proccess/createAccount_screen.dart';
 
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 class SignIn extends StatefulWidget {
   const SignIn({super.key});
 
@@ -15,22 +19,24 @@ class _SignInState extends State<SignIn> {
   TextEditingController emailControl = TextEditingController();
   TextEditingController passwordControl = TextEditingController();
 
-  @override
-  void initState() {
-    super.initState();
-    _checkLoginStatus();
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _checkLoginStatus(); // Call the async method
+  // }
+  //  Future<void> _checkLoginStatus() async {
+  //   // Check if the user is logged in
+  //   if (await isUserLoggedIn()) {
+  //     Navigator.pushReplacement(
+  //       context,
+  //       MaterialPageRoute(builder: (context) => ProfileScreen()),
+  //     );
+  //   } else {
+  //     print("User is not logged in.");
+  //   }
+  // }
 
-  Future<void> _checkLoginStatus() async {
-    if (await isUserLoggedIn()) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
-      );
-    } else {
-      print("User is not logged in.");
-    }
-  }
+  var cache = CacheHelper();
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +89,17 @@ class _SignInState extends State<SignIn> {
                     ),
                     onPressed: () async {
                       loginUser(emailControl.text, passwordControl.text);
-                      await _checkLoginStatus();
+                      // await _checkLoginStatus();
+                      final username =
+                          await getUserNameByEmail(emailControl.text);
+                      cache.setData(key: "name", value: username);
+                      cache.getData(key: "name");
+                      cache.setData(key: "user", value: emailControl.text);
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  ProfileScreen(userName: username)));
                     },
                   ),
                 ),
@@ -108,9 +124,11 @@ class _SignInState extends State<SignIn> {
                 SizedBox(height: 70),
                 InkWell(
                   hoverColor: Colors.transparent,
-                  onTap: () async {
-                    await signInWithGoogle();
-                    _checkLoginStatus();
+                  onTap: () {
+                    signInWithGoogle();
+                    Future.delayed(Duration(seconds: 8), () {
+                      // _checkLoginStatus();
+                    });
                   },
                   child: Container(
                     height: 50,

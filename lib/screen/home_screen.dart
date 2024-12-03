@@ -1,9 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:stylesphere/controllers/firebase_func.dart';
-import 'package:stylesphere/controllers/sharedpre.dart';
 import 'package:stylesphere/models/Item.dart';
-import 'package:stylesphere/models/Users.dart';
 import 'package:stylesphere/screen/sign_proccess/signin_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -93,8 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
           // if you want to find smth eg. ['Products', byCategory: "Top", byGender: "Female"]
           // or ['Users', byEmail: "p4nd2x@gmail.com"]
           // LOOK DEBUG CONSOLE FOR OUTPUT
-          // myUser!.Name to fetch logged-in user name
-          future: fetchProducts(byPrice: 10),
+          future: fetchProducts(byGender: "Female"),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());

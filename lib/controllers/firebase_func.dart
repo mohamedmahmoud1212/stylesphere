@@ -2,11 +2,14 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:stylesphere/controllers/sharedpre.dart';
 import 'package:stylesphere/models/Item.dart';
 import 'package:stylesphere/models/Users.dart';
 
 Users? myUser;
 
+Users? myUsers;
+var cache=CacheHelper();
 String genTransactionId() {
   var random = Random();
   String randomDigits =
@@ -253,4 +256,68 @@ Future<void> logoutUser() async {
   } catch (e) {
     throw Exception('Logout failed: $e');
   }
+}
+
+Future<void> getUserID(String email) async {
+  try {
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('Users')
+        .where('Email', isEqualTo: email)
+        .get();
+    String GUID = "";
+    for (var doc in querySnapshot.docs) {
+      GUID = await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(doc.id)
+          .toString();
+    }
+    print('User GUID is: $GUID');
+  } catch (e) {
+    throw Exception('Failed to fetch user GUID: $e');
+  }
+}
+// import 'package:cloud_firestore/cloud_firestore.dart';
+
+Future<String> getUserNameByEmail(String email) async {
+  try {
+    // Query Firestore for a document in the 'Users' collection with the matching email
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('Users')
+        .where('Email', isEqualTo: email)
+        .get();
+
+    // Check if a matching document exists
+    if (querySnapshot.docs.isNotEmpty) {
+      // Extract the user's name from the document
+      final userName = querySnapshot.docs.first.data()['Name'] as String;
+      return userName;
+    } else {
+      throw Exception('No user found with this email.');
+    }
+  } catch (e) {
+    throw Exception('Failed to fetch user name: $e');
+  }
+}
+final username=getUserNameByEmail(cache.getData(key: "user"));
+final List<Item> itemsMale =   fetchProducts(byGender: "Male") as List<Item>;
+final List<Item> itemsFemale=  fetchProducts(byGender: "Female") as List<Item>;
+
+Future<String> getProductsCat(String gender) async {
+  List<Item> items = await fetchProducts(byGender: gender);
+  try {
+    for (var item in items) {
+      print('GUID: ${item.documentID}');
+      print('Name: ${item.name}');
+      print('Category: ${item.category}');
+      print('Price: ${item.price}');
+      print('Description: ${item.description}');
+      print('Interest: ${item.interest}');
+      print('Image: ${item.image}');
+      print("====================================");
+      return item.category.toString();
+    }
+  } catch (ex) {
+    return 'error: $ex';
+  }
+  return '';
 }

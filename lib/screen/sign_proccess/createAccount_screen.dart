@@ -91,9 +91,16 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                             "Continue",
                             style: TextStyle(color: Colors.white),
                           ),
-                          onPressed: ()   {
-                              registerUser(email: emailControl.text, password: passwordControl.text, name: NameControl.text, phone: PhoneControl.text);
-                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>SignIn()));
+                          onPressed: () {
+                            registerUser(
+                                email: emailControl.text,
+                                password: passwordControl.text,
+                                name: NameControl.text,
+                                phone: PhoneControl.text);
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => SignIn()));
                           },
                         ),
                       ),
@@ -105,9 +112,15 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                             InkWell(
                               enableFeedback: false,
                               onTap: () {
-                                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>SignIn()));
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => SignIn()));
                               },
-                              child: Text("Log In",overflow: TextOverflow.visible,),
+                              child: Text(
+                                "Log In",
+                                overflow: TextOverflow.visible,
+                              ),
                             )
                           ],
                         ),
