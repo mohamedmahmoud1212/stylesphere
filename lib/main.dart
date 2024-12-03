@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:stylesphere/controllers/sharedpre.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:stylesphere/screen/category/home_categories.dart';
  import 'package:stylesphere/screen/home_screen.dart';
 import 'package:stylesphere/screen/product/Home.dart';
 import '../firebase_options.dart';
@@ -33,7 +34,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: Home(),
+      home: ShoppingScreen(),
     );
   }
 }

@@ -299,7 +299,9 @@ Future<String> getUserNameByEmail(String email) async {
   }
 }
 final username=getUserNameByEmail(cache.getData(key: "user"));
+
 final List<Item> itemsMale =   fetchProducts(byGender: "Male") as List<Item>;
+
 final List<Item> itemsFemale=  fetchProducts(byGender: "Female") as List<Item>;
 
 Future<String> getProductsCat(String gender) async {
