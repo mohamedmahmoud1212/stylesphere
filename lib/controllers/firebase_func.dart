@@ -129,20 +129,24 @@ Future<List<Item>> fetchProducts({
   }
 }
 
-Future<void> debugFetchin() async {
+Future<String> getProductsName() async {
   List<Item> items = await fetchProducts(byGender: "Female");
-  for (var item in items) {
-    print('GUID: ${item.documentID}');
-    print('Name: ${item.name}');
-    print('Category: ${item.category}');
-    print('Price: ${item.price}');
-    print('Description: ${item.description}');
-    print('Interest: ${item.interest}');
-    print('Image: ${item.image}');
-    print("====================================");
-    // print('Email: ${item.email}');
-    // print('Phone: ${item.phone}');
+  try {
+    for (var item in items) {
+      // print('GUID: ${item.documentID}');
+      // print('Name: ${item.name}');
+      // print('Category: ${item.category}');
+      // print('Price: ${item.price}');
+      // print('Description: ${item.description}');
+      // print('Interest: ${item.interest}');
+      // print('Image: ${item.image}');
+      // print("====================================");
+      return item.name;
+    }
+  } catch (ex) {
+    return 'error: $ex';
   }
+  return '';
 }
 
 Future<void> registerUser(
@@ -250,6 +254,15 @@ Future<void> logoutUser() async {
   try {
     await FirebaseAuth.instance.signOut();
     print("Logout successful!");
+  } catch (e) {
+    throw Exception('Logout failed: $e');
+  }
+}
+
+Future<void> resetPassowrd(email) async {
+  try {
+    await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+    print("Password reset code sent to user email: ${email}!");
   } catch (e) {
     throw Exception('Logout failed: $e');
   }
